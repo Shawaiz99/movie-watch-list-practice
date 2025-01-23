@@ -1,11 +1,11 @@
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-  justify-content: center;
-  align-items: center;
+.bg-bone-white {
+  background-color: #f9f6ee;
+}
+
+.custom-badge-position {
+  position: absolute;
+  top: 5px !important;
+  left: 10px !important;
 }
 
 .pulse {

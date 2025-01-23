@@ -1,9 +1,12 @@
-import Logo from './components/Logo';
+import MovieCard from "./components/MovieCard";
+import Navbar from "./components/Navbar";
+
 
 function App() {
   return (
     <>
-      <Logo />
+      <Navbar/>
+      <MovieCard/>
     </>
   );
 }
