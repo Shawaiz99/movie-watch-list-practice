@@ -2,11 +2,13 @@ import MovieForm from './components/MovieForm';
 import MovieList from './components/MovieList';
 import Navbar from './components/Navbar';
 import { useState } from 'react';
+import ThemeToggler from './components/ThemeToggler'
 
 function App() {
-  const [movies, setMovies] = useState([
+  const [movies, setMovies] = useState([]);
 
-  ]);
+  // set up the state for the editingMovie
+  const [editingMovie, setEditingMovie] = useState(null);
 
   const addMovie = (newMovie) => {
     // We cannot mutate - the actual state (it is always immutable)
@@ -21,13 +23,36 @@ function App() {
     setMovies((prev) => prev.filter((movie) => movie.id !== id));
   };
 
+  const editMovie = (movieToEdit) => {
+    console.log('Captured Edit Movie: ', movieToEdit);
+    setEditingMovie(movieToEdit);
+  };
+
+  const updateMovie = (updatedMovie) => {
+    setMovies((prev) =>
+      prev.map((movie) => (movie.id === updatedMovie.id ? updatedMovie : movie))
+    );
+    // todo - set the editingMovie to null
+    setEditingMovie(null);
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar>
+        <ThemeToggler/>
+      </Navbar>
       <div className="d-flex justify-content-center">
-        <MovieForm addMovie={addMovie} />
+        <MovieForm
+          addMovie={addMovie}
+          editingMovie={editingMovie}
+          updateMovie={updateMovie}
+        />
       </div>
-      <MovieList movies={movies} removeMovie={removeMovie} />
+      <MovieList
+        movies={movies}
+        editMovie={editMovie}
+        removeMovie={removeMovie}
+      />
     </>
   );
 }

@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { isValidTitle, isValidRate } from '../utils.js';
 
-function MovieForm({ addMovie }) {
+function MovieForm({ addMovie, editingMovie, updateMovie }) {
   const [title, setTitle] = useState('');
   const [rate, setRate] = useState('');
 
   // add state that will control the validity of the inputs
   const [validTitle, setValidTitle] = useState(false);
   const [validRate, setValidRate] = useState(false);
+
+
+  // we will use the useEffect hook to trigger an action when the editingMovie state changes
+  useEffect(() => {
+    if(editingMovie){
+      setTitle(editingMovie.title);
+      setRate(editingMovie.rate);
+      setValidTitle(true);
+      setValidRate(true);
+    }
+  }, [editingMovie]);
+
 
   // Requirements for inputs
   // title - not empty and more than 3 characters
@@ -25,23 +37,44 @@ function MovieForm({ addMovie }) {
     setValidRate(isValidRate(value));
   };
 
+  const isFormValid = validTitle && validRate;
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const newMovie = {
-      id: Date.now(),
+    console.log('!isValidRate(rate)', !isValidRate(rate))
+    console.log('!isValidTitle(title)', !isValidTitle(title))
+
+    if(!isFormValid){
+      console.log('The submission failed due to invalid inputs!')
+      return;
+    }
+
+    const movieData = {
+      id: editingMovie ? editingMovie.id : Date.now(),
       title: title,
       rate: rate,
     };
 
-    addMovie(newMovie);
+    if(editingMovie){
+      console.log('Update trigerred: ', movieData)
+      updateMovie(movieData);
+    } else {
+      console.log('New Movie Captured: ', movieData);
+      addMovie(movieData);
+    }
+    
 
-    console.log('New Movie Captured: ', newMovie);
 
     // Reset the state
     setTitle('');
     setRate('');
+    // Reset the state of input validations
+    setValidRate(false);
+    setValidTitle(false);
   };
+
+  
 
   return (
     <form
@@ -78,8 +111,9 @@ function MovieForm({ addMovie }) {
         id="submit-btn"
         type="submit"
         className="btn btn-warning btn-sm col-xl-2 col-12"
+        disabled={!isFormValid} 
       >
-        Add
+        {editingMovie ? 'Update' : 'Add'}
       </button>
     </form>
   );
